@@ -2896,7 +2896,7 @@ public class SettingsProvider extends ContentProvider {
         }
 
         private final class UpgradeController {
-            private static final int SETTINGS_VERSION = 148;
+            private static final int SETTINGS_VERSION = 147;
 
             private final int mUserId;
 
@@ -3421,39 +3421,31 @@ public class SettingsProvider extends ContentProvider {
                 }
 
                 if (currentVersion == 146) {
-                    // Version 147: Set the default value for WIFI_WAKEUP_AVAILABLE.
+                    // Version 147
+                    /* Pixel Launcher checks this Setting to show Adaptive Icons options
+                        and anyway we need to enable dev settings for our stuff so we set
+                        this to enabled once forever */
                     if (userId == UserHandle.USER_SYSTEM) {
                         final SettingsState globalSettings = getGlobalSettingsLocked();
-                        final Setting currentSetting = globalSettings.getSettingLocked(
-                                Settings.Global.WIFI_WAKEUP_AVAILABLE);
-                        if (currentSetting.getValue() == null) {
-                            final int defaultValue = getContext().getResources().getInteger(
-                                    com.android.internal.R.integer.config_wifi_wakeup_available);
+                        Setting currentSetting = globalSettings.getSettingLocked(
+                                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED);
+                        if (currentSetting.isNull()) {
                             globalSettings.insertSettingLocked(
-                                    Settings.Global.WIFI_WAKEUP_AVAILABLE,
-                                    String.valueOf(defaultValue),
-                                    null, true, SettingsState.SYSTEM_PACKAGE_NAME);
+                                    Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
+                                    "1", null, true, SettingsState.SYSTEM_PACKAGE_NAME);
+                        }
+                        /* Play services check this Setting internally to notify about
+                            new OTA so we force it to disabled once forever */
+                        currentSetting = globalSettings.getSettingLocked(
+                                Settings.Global.OTA_DISABLE_AUTOMATIC_UPDATE);
+                        if (currentSetting.isNull()) {
+                            globalSettings.insertSettingLocked(
+                                    Settings.Global.OTA_DISABLE_AUTOMATIC_UPDATE,
+                                    "1", null, true, SettingsState.SYSTEM_PACKAGE_NAME);
                         }
                     }
 
                     currentVersion = 147;
-                }
-
-                if (currentVersion == 147) {
-                    // Version 148: Set the default value for DEFAULT_RESTRICT_BACKGROUND_DATA.
-                    if (userId == UserHandle.USER_SYSTEM) {
-                        final SettingsState globalSettings = getGlobalSettingsLocked();
-                        final Setting currentSetting = globalSettings.getSettingLocked(
-                                Global.DEFAULT_RESTRICT_BACKGROUND_DATA);
-                        if (currentSetting.isNull()) {
-                            globalSettings.insertSettingLocked(
-                                    Global.DEFAULT_RESTRICT_BACKGROUND_DATA,
-                                    getContext().getResources().getBoolean(
-                                            R.bool.def_restrict_background_data) ? "1" : "0",
-                                    null, true, SettingsState.SYSTEM_PACKAGE_NAME);
-                        }
-                    }
-                    currentVersion = 148;
                 }
 
                 // vXXX: Add new settings above this point.

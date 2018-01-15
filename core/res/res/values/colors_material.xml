@@ -41,7 +41,7 @@
 
     <color name="accent_material_700">@color/material_deep_teal_700</color>
     <color name="accent_material_light">@color/material_deep_teal_500</color>
-    <color name="accent_material_dark">@color/material_deep_teal_200</color>
+    <color name="accent_material_dark">@color/material_cyan_500</color>
     <color name="accent_material_50">@color/material_deep_teal_50</color>
 
     <color name="button_material_dark">#ff5a595b</color>
@@ -86,6 +86,8 @@
     <!-- Primary & accent colors -->
     <eat-comment />
 
+    <color name="material_cyan_500">#00BCD4</color>
+    
     <color name="material_grey_900">#ff212121</color>
     <color name="material_grey_850">#ff303030</color>
     <color name="material_grey_800">#ff424242</color>
